@@ -21,13 +21,11 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
     var filter1: Float = 1.0
     var filter2: Float = 1.0
     var filter3: Float = 1.0
-    var filter4: Float = 0.5
     var filter5: Float = 1.0
     
     @IBOutlet var cameraImageView: UIImageView!
     
     var saveData: UserDefaults = UserDefaults.standard
-    
     
     //画像加工するフィルターの宣言
     var filter: CIFilter!
@@ -36,6 +34,9 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        CGFloat() = saveData.object(forKey: "kazu") as? Float
+        
     }
     
     //撮影する時のメゾット
@@ -108,23 +109,6 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
         cameraImageView.image = UIImage(cgImage: cgImage!)
     }
     
-    /*
-     @IBAction func filter1Slider4(sender: UISlider){
-     sender.minimumValue = 0
-     sender.maximumValue = 2
-     sender.isContinuous = true
-     print(filter4)
-     let filterImage: CIImage = CIImage(image: originalImage)!
-     //フィルターの設定
-     filter = CIFilter(name: "CIBoxBlur")!
-     filter.setValue(filterImage, forKey: kCIInputImageKey)
-     
-     let ctx = CIContext(options: nil)
-     let cgImage = ctx.createCGImage(filter.outputImage!, from: filter.outputImage!.extent)
-     cameraImageView.image = UIImage(cgImage: cgImage!)
-     }
-     */
-    
     @IBAction func filter1Slider5(sender: UISlider){
         filter5 = sender.value
         print(filter5)
@@ -146,9 +130,26 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
     
     
     //編集した画像保存
-    @IBAction func save(){
+    @IBAction func make(){
         
-        UIImageWriteToSavedPhotosAlbum(cameraImageView.image!, nil, nil, nil)
+        //UIImageWriteToSavedPhotosAlbum(cameraImageView.image!, nil, nil, nil)
+        
+        saveData.set(CGFloat() ,forKey: "kazu")
+        
+        //alertだす
+        let alert: UIAlertController = UIAlertController(title: "保存", message: "保存完了", preferredStyle: .alert)
+        
+        //okボタン
+        alert.addAction(UIAlertAction(
+            title: "OK",
+            style: .default,
+            handler: { action in
+                //print("OKボタンが押されました")
+                //self.navigationController?.popViewController(animated: true)
+        }
+            )
+        )
+        present(alert, animated: true, completion: nil)
         
     }
     //カメラロールにある画像を読み込む
