@@ -21,21 +21,21 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
     var filter1: Float = 1.0
     var filter2: Float = 1.0
     var filter3: Float = 1.0
-    var filter5: Float = 1.0
+   // var filter5: Float = 1.0
     
     @IBOutlet var cameraImageView: UIImageView!
     
     var saveData: UserDefaults = UserDefaults.standard
+    var filter5: CGFloat = 1.0
     
     //画像加工するフィルターの宣言
     var filter: CIFilter!
     //画像加工するための元となる画像
     var originalImage: UIImage!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        CGFloat() = saveData.object(forKey: "kazu") as? Float
+        filter5 = (saveData.object(forKey: "kazu") as? CGFloat)!
         
     }
     
@@ -58,9 +58,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
     //カメラ、カメラロールを使った時に選択した画像をアプリ内に表示する為のメゾット
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         cameraImageView.image = info[UIImagePickerControllerEditedImage] as? UIImage
-        
         originalImage = cameraImageView.image
-        
         dismiss(animated: true, completion: nil)
     }
     
@@ -71,7 +69,6 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
         //フィルターの設定
         filter = CIFilter(name: "CIColorControls")!
         filter.setValue(filterImage, forKey: kCIInputImageKey)
-        
         //彩度の調整
         filter.setValue(filter1, forKey: "inputSaturation")
         let ctx = CIContext(options: nil)
@@ -86,7 +83,6 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
         //フィルターの設定
         filter = CIFilter(name: "CIColorControls")!
         filter.setValue(filterImage, forKey: kCIInputImageKey)
-        
         //明度の調整
         filter.setValue(filter2, forKey: "inputBrightness")
         let ctx = CIContext(options: nil)
@@ -101,7 +97,6 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
         //フィルターの設定
         filter = CIFilter(name: "CIColorControls")!
         filter.setValue(filterImage, forKey: kCIInputImageKey)
-        
         //コントラストの調整
         filter.setValue(filter3, forKey: "inputContrast")
         let ctx = CIContext(options: nil)
@@ -110,15 +105,14 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
     }
     
     @IBAction func filter1Slider5(sender: UISlider){
-        filter5 = sender.value
+        filter5 = CGFloat(sender.value)
         print(filter5)
         let filterImage: CIImage = CIImage(image: originalImage)!
         //フィルターの設定
         filter = CIFilter(name: "CIColorControls")!
         filter.setValue(filterImage, forKey: kCIInputImageKey)
-        
         //彩度の調整
-        filter.setValue(filter5, forKey: "inputSaturation")
+        filter.setValue(0.5, forKey: "inputSaturation")
         //明度の調整
         filter.setValue(0.5, forKey: "inputBrightness")
         //コントラストの調整
@@ -133,9 +127,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
     @IBAction func make(){
         
         //UIImageWriteToSavedPhotosAlbum(cameraImageView.image!, nil, nil, nil)
-        
-        saveData.set(CGFloat() ,forKey: "kazu")
-        
+        saveData.set(filter5 ,forKey: "kazu")
         //alertだす
         let alert: UIAlertController = UIAlertController(title: "保存", message: "保存完了", preferredStyle: .alert)
         
@@ -150,18 +142,17 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
             )
         )
         present(alert, animated: true, completion: nil)
-        
     }
+    
+    
     //カメラロールにある画像を読み込む
     @IBAction func openAlbum(){
-        
         //カメラロールを使えるか
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
             //カメラロールの画像を選択して画像を表示
             let picker = UIImagePickerController()
             picker.sourceType = .photoLibrary
             picker.delegate = self
-            
             picker.allowsEditing = true
             present(picker, animated: true, completion: nil)
         }
@@ -171,6 +162,5 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate, UINaviga
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
     
 }
